@@ -36,7 +36,7 @@ class _homeState extends State<home> {
                     SizedBox(height: 120),
                     ElevatedButton(
                       onPressed:() {
-                        Navigator.of(context).pushNamed('/log in');
+                        Navigator.of(context).pushNamed('/login');
                       }
                       ,
                       child: Text(

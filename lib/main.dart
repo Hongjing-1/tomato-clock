@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'Clockpage.dart';
 import 'home.dart';
 import 'Register.dart';
 import 'log in.dart';
-import 'HomePage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,9 +16,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes:{
-          '/register':(context)=>Home2(),
-           '/log in':(context)=>login(),
-          '/HomePage':(context)=>Homepage()
+          '/register':(context)=>Register(),
+           '/Log in':(context)=>login(),
+          '/home':(context)=>home(),
+          '/login':(context)=>ClockPage()
         },
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -27,3 +28,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+

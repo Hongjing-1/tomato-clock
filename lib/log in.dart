@@ -42,7 +42,7 @@ class _loginState extends State<login> {
                   labelText: "Email:",
                   labelStyle: TextStyle(
                     color: Color(0xFFF7E7CE),
-                    fontSize: 30
+                    fontSize: 40
                   ),
                 ),
               ),
@@ -58,7 +58,10 @@ class _loginState extends State<login> {
 
               ),
               SizedBox(height: 20),
-              ElevatedButton(onPressed: () {},
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/login');
+                  },
                   child: Text(
                       'Log in',
                   style: TextStyle(

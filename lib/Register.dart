@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
-class Home2 extends StatefulWidget {
-  const Home2({super.key});
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  State<Home2> createState() => RegisterPage();
+  State<Register> createState() => RegisterPage();
 }
 
-class RegisterPage extends State<Home2> {
+class RegisterPage extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(
           "Register",
-          style: TextStyle(fontSize: 42)),
+          style: TextStyle(
+              fontSize: 42)),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: (Navigator.of(context).pop),
@@ -34,7 +35,9 @@ class RegisterPage extends State<Home2> {
               decoration: InputDecoration(labelText: "Password"),
             ),
             SizedBox(height: 20),
-            ElevatedButton(onPressed: () {}, child: Text("Create Account")),
+            ElevatedButton(onPressed: () {
+             // NavigationBar
+            }, child: Text("Create Account")),
           ],
         ),
       ),
