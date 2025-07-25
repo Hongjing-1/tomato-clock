@@ -42,14 +42,14 @@ class _loginState extends State<login> {
                   labelText: "Email:",
                   labelStyle: TextStyle(
                     color: Color(0xFFF7E7CE),
-                    fontSize: 40
+                    fontSize: 30
                   ),
                 ),
               ),
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
-                    labelText: "password:",
+                    labelText: "Password:",
                   labelStyle: TextStyle(
                     color: Color(0xFFF7E7CE),
                     fontSize: 30
