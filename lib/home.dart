@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:untitled4/Setting page.dart';
 import 'package:untitled4/Taskpage.dart';
 import 'clock.dart';
+import 'package:provider/provider.dart';
+import 'app_state.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -28,7 +30,6 @@ class _HomepageState extends State<Homepage>
   bool isMusicPlaying = false;
   bool isWorkMode = true;
   bool onTask = false;
-  bool showModel = false;
   String nowTask = "Please select a task";
 
   // 初始化資源
@@ -49,7 +50,6 @@ class _HomepageState extends State<Homepage>
     _animationController.dispose();
     _countdownTimer?.cancel();
     _audioPlayer.dispose();
-    // _accelerometerSubscription?.cancel();
     super.dispose();
   }
 
@@ -103,8 +103,22 @@ class _HomepageState extends State<Homepage>
     });
   }
 
+  // 重置計時器
+  void _refreshTimer() {
+    _countdownTimer?.cancel();
+    _animationController.reset();
+
+    setState(() {
+      totalDurationInSeconds = (workDuration + breakDuration) * 60;
+      isTimerRunning = false;
+      isWorkMode = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context); // 取得狀態
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -135,8 +149,14 @@ class _HomepageState extends State<Homepage>
                     color: Colors.white,
                   ),
                 ),
-                // 計時器顯示
-                CustomPaint(
+
+                // ⭐ 用 appState.showMode 判斷顯示模式
+                appState.showMode
+                    ? Text(
+                  _formatTime(totalDurationInSeconds), // 數字模式
+                  style: TextStyle(fontSize: 64, color: Colors.white),
+                )
+                    : CustomPaint(
                   painter: ClockPainter(
                     isTimerRunning
                         ? 1 -
@@ -148,6 +168,7 @@ class _HomepageState extends State<Homepage>
                   ),
                   size: Size(300, 300),
                 ),
+
                 SizedBox(height: 12),
                 Center(
                   child: Row(
@@ -155,19 +176,22 @@ class _HomepageState extends State<Homepage>
                     children: [
                       IconButton(
                         onPressed: isMusicPlaying ? _stopMusic : _playMusic,
-                        icon:
-                        isMusicPlaying
+                        icon: isMusicPlaying
                             ? Icon(Icons.music_note_sharp)
                             : Icon(Icons.music_off_sharp),
                         iconSize: 42,
                       ),
-                      // 開始暫停鈕
                       IconButton(
                         onPressed: isTimerRunning ? _pauseTimer : _startTimer,
-                        icon:
-                        isTimerRunning
+                        icon: isTimerRunning
                             ? Icon(Icons.stop)
                             : Icon(Icons.play_arrow),
+                        iconSize: 42,
+                      ),
+                      IconButton(
+                        onPressed: _refreshTimer,
+                        icon: Icon(Icons.refresh),
+                        tooltip: 'Refresh Timer',
                         iconSize: 42,
                       ),
                     ],
@@ -176,7 +200,7 @@ class _HomepageState extends State<Homepage>
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 16),
                   child: Card(
-                    elevation: 8, // 視覺層次
+                    elevation: 8,
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32),
@@ -202,12 +226,7 @@ class _HomepageState extends State<Homepage>
                                   Icons.delete_outline,
                                   color: Colors.red,
                                 ),
-                                onPressed: () async {
-                                  // await TaskStorage.deleteTask(index);
-                                  // setState(() {
-                                  //   tasks.removeAt(index);
-                                  // });
-                                },
+                                onPressed: () {},
                               ),
                             ),
                             SizedBox(
@@ -222,7 +241,7 @@ class _HomepageState extends State<Homepage>
                                   Icons.delete_outline,
                                   color: Colors.red,
                                 ),
-                                onPressed: () async {},
+                                onPressed: () {},
                               ),
                             ),
                           ],
@@ -246,7 +265,7 @@ class _HomepageState extends State<Homepage>
         return AlertDialog(
           title: Text("Choose Task"),
           content: SizedBox(
-            height: 250, // 給定固定高度
+            height: 250,
             width: double.maxFinite,
             child: ListView(
               padding: const EdgeInsets.all(8),
@@ -258,7 +277,7 @@ class _HomepageState extends State<Homepage>
                     setState(() {
                       nowTask = "'read english' in progress";
                     });
-                    Navigator.pop(context); // 關閉 dialog
+                    Navigator.pop(context);
                   },
                 ),
                 Divider(),
@@ -287,5 +306,12 @@ class _HomepageState extends State<Homepage>
     setState(() {
       isWorkMode = elapsedSeconds < workTimeInSeconds;
     });
+  }
+
+  //時間格式化
+  String _formatTime(int seconds) {
+    int minutes = seconds ~/ 60;
+    int secs = seconds % 60;
+    return "${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}";
   }
 }

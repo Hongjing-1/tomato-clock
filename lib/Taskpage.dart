@@ -9,9 +9,25 @@ class Taskpage extends StatefulWidget {
 
 class _TaskpageState extends State<Taskpage> {
   List<Map<String, String>> tasks = [];
+  late TextEditingController taskController;
+  late TextEditingController workController;
+  late TextEditingController restController;
 
-  final TextEditingController workController = TextEditingController();
-  final TextEditingController restController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    taskController = TextEditingController();
+    workController = TextEditingController();
+    restController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    taskController.dispose();
+    workController.dispose();
+    restController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +94,7 @@ class _TaskpageState extends State<Taskpage> {
   }
 
   void _addTaskDialog() {
+    taskController.clear();
     workController.clear();
     restController.clear();
 
@@ -94,12 +111,13 @@ class _TaskpageState extends State<Taskpage> {
             ),
             TextButton(
               onPressed: () {
+                final task = taskController.text;
                 final work = workController.text;
                 final rest = restController.text;
 
-                if (work.isNotEmpty && rest.isNotEmpty) {
+                if (task.isNotEmpty&&work.isNotEmpty && rest.isNotEmpty) {
                   setState(() {
-                    tasks.add({'work': work, 'rest': rest});
+                    tasks.add({'task':task,'work': work, 'rest': rest});
                   });
                 }
 
@@ -115,6 +133,7 @@ class _TaskpageState extends State<Taskpage> {
 
   void _editTaskDialog(int index) {
     // 填入原本的值
+    taskController.text = tasks[index]['task']!;
     workController.text = tasks[index]['work']!;
     restController.text = tasks[index]['rest']!;
 
@@ -131,6 +150,7 @@ class _TaskpageState extends State<Taskpage> {
             ),
             TextButton(
               onPressed: () {
+                final task = taskController.text;
                 final work = workController.text;
                 final rest = restController.text;
 
@@ -179,9 +199,23 @@ class _TaskpageState extends State<Taskpage> {
 
   Widget _buildInputFields() {
     return SizedBox(
-      height: 200,
+      height: 220,
       child: Column(
         children: [
+          // 任務名稱
+          TextField(
+            controller: taskController,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              labelText: 'Task Name',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // 工作時間
           TextField(
             controller: workController,
             keyboardType: TextInputType.number,
@@ -193,6 +227,8 @@ class _TaskpageState extends State<Taskpage> {
             ),
           ),
           const SizedBox(height: 10),
+
+          // 休息時間
           TextField(
             controller: restController,
             keyboardType: TextInputType.number,

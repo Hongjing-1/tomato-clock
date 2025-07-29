@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'app_state.dart';
 
 class Settingpage extends StatefulWidget {
   const Settingpage({super.key});
@@ -9,6 +12,7 @@ class Settingpage extends StatefulWidget {
 
 class _SettingpageState extends State<Settingpage> {
   bool showMode = false; // false = 指針
+  
 
   @override
   Widget build(BuildContext context) {
@@ -103,4 +107,66 @@ class _SettingpageState extends State<Settingpage> {
       ),
     );
   }
+}
+
+@override
+Widget build(BuildContext context) {
+  final appState = Provider.of<AppState>(context);
+
+  return Scaffold(
+    body: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.purple.shade400, Colors.blue.shade300],
+        ),
+      ),
+      child: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 12),
+              Text(
+                'Setting',
+                style: TextStyle(
+                  fontSize: 42,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 12),
+              Card(
+                elevation: 8,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Column(
+                    children: [
+                      ListTile(title: Text('Account Settings')),
+                      Divider(),
+                      ListTile(title: Text('Background')),
+                      Divider(),
+                      ListTile(
+                        title: Text('Digital Mode'),
+                        trailing: Switch(
+                          value: appState.showMode,
+                          onChanged: (bool value) {
+                            appState.toggleShowMode(value);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }
