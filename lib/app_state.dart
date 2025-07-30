@@ -7,6 +7,16 @@ class AppState extends ChangeNotifier {
 
   void toggleShowMode(bool value) {
     _showMode = value;
-    notifyListeners(); // 通知所有使用 showMode 的畫面更新
-  }
+    notifyListeners();
+  } // 切換數字模式
+
+  List<Color> backgroundGradient = [
+    Colors.purple.shade400,
+    Colors.blue.shade300,
+  ]; // 預設背景漸層
+
+  void setBackgroundGradient(List<Color> gradient) {
+    backgroundGradient = gradient;
+    notifyListeners();
+  } // 更新背景漸層
 }

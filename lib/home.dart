@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled4/Setting page.dart';
-import 'package:untitled4/Taskpage.dart';
-import 'clock.dart';
 import 'package:provider/provider.dart';
 import 'app_state.dart';
+import 'task_provider.dart';
+import 'clock.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -15,24 +13,19 @@ class Homepage extends StatefulWidget {
   State<Homepage> createState() => _HomepageState();
 }
 
-class _HomepageState extends State<Homepage>
-    with SingleTickerProviderStateMixin {
+class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late AudioPlayer _audioPlayer;
 
   Timer? _countdownTimer;
 
-  // 宣告變數
   int workDuration = 25;
   int breakDuration = 5;
   int totalDurationInSeconds = 1500;
   bool isTimerRunning = false;
   bool isMusicPlaying = false;
   bool isWorkMode = true;
-  bool onTask = false;
-  String nowTask = "Please select a task";
 
-  // 初始化資源
   @override
   void initState() {
     super.initState();
@@ -44,7 +37,6 @@ class _HomepageState extends State<Homepage>
     _audioPlayer.setReleaseMode(ReleaseMode.loop);
   }
 
-  // 釋放資源
   @override
   void dispose() {
     _animationController.dispose();
@@ -53,7 +45,6 @@ class _HomepageState extends State<Homepage>
     super.dispose();
   }
 
-  // 開始計時
   void _startTimer() {
     setState(() {
       totalDurationInSeconds = (workDuration + breakDuration) * 60;
@@ -77,7 +68,6 @@ class _HomepageState extends State<Homepage>
     });
   }
 
-  // 停止計時
   void _pauseTimer() {
     _countdownTimer?.cancel();
     _animationController.stop();
@@ -86,24 +76,20 @@ class _HomepageState extends State<Homepage>
     });
   }
 
-  // 播放音樂
   Future<void> _playMusic() async {
-    await _audioPlayer.play(AssetSource('birds-339196.mp3')); // 播放 assets 音樂
-    print("音樂播放中...");
+    await _audioPlayer.play(AssetSource('birds-339196.mp3'));
     setState(() {
       isMusicPlaying = true;
     });
   }
 
-  // 停止播放音樂
   Future<void> _stopMusic() async {
-    await _audioPlayer.stop(); // 停止播放
+    await _audioPlayer.stop();
     setState(() {
       isMusicPlaying = false;
     });
   }
 
-  // 重置計時器
   void _refreshTimer() {
     _countdownTimer?.cancel();
     _animationController.reset();
@@ -117,7 +103,8 @@ class _HomepageState extends State<Homepage>
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context); // 取得狀態
+    final appState = Provider.of<AppState>(context);
+    final taskProvider = Provider.of<TaskProvider>(context);
 
     return Scaffold(
       body: Container(
@@ -132,73 +119,69 @@ class _HomepageState extends State<Homepage>
           child: Center(
             child: Column(
               children: [
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
+                // 顯示當前選擇的任務
                 TextButton(
-                  onPressed: () {
-                    _chooseTaskDialog();
-                  },
-                  child: Text(nowTask, style: TextStyle(color: Colors.white)),
+                  onPressed: _chooseTaskDialog,
+                  child: Text(taskProvider.currentTask, style: const TextStyle(color: Colors.white)),
                 ),
-                SizedBox(height: 8),
-                // 工作/休息時間顯示
+                const SizedBox(height: 8),
                 Text(
                   isWorkMode ? 'Work Time' : 'Rest Time',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 42,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
 
-                // ⭐ 用 appState.showMode 判斷顯示模式
+                // 顯示計時模式 (數字 or 圓形鐘)
                 appState.showMode
                     ? Text(
-                  _formatTime(totalDurationInSeconds), // 數字模式
-                  style: TextStyle(fontSize: 64, color: Colors.white),
+                  _formatTime(totalDurationInSeconds),
+                  style: const TextStyle(fontSize: 64, color: Colors.white),
                 )
                     : CustomPaint(
                   painter: ClockPainter(
                     isTimerRunning
-                        ? 1 -
-                        (totalDurationInSeconds /
-                            ((workDuration + breakDuration) * 60))
+                        ? 1 - (totalDurationInSeconds / ((workDuration + breakDuration) * 60))
                         : 0,
                     workDuration,
                     breakDuration,
                   ),
-                  size: Size(300, 300),
+                  size: const Size(300, 300),
                 ),
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
+                // 音樂、開始/暫停、重置按鈕
                 Center(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
                         onPressed: isMusicPlaying ? _stopMusic : _playMusic,
-                        icon: isMusicPlaying
-                            ? Icon(Icons.music_note_sharp)
-                            : Icon(Icons.music_off_sharp),
+                        icon: Icon(isMusicPlaying ? Icons.music_note_sharp : Icons.music_off_sharp),
                         iconSize: 42,
                       ),
                       IconButton(
                         onPressed: isTimerRunning ? _pauseTimer : _startTimer,
-                        icon: isTimerRunning
-                            ? Icon(Icons.stop)
-                            : Icon(Icons.play_arrow),
+                        icon: Icon(isTimerRunning ? Icons.stop : Icons.play_arrow),
                         iconSize: 42,
                       ),
                       IconButton(
                         onPressed: _refreshTimer,
-                        icon: Icon(Icons.refresh),
+                        icon: const Icon(Icons.refresh),
                         tooltip: 'Refresh Timer',
                         iconSize: 42,
                       ),
                     ],
                   ),
                 ),
+                const SizedBox(height: 12),
+
+                // 任務列表
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16),
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
                   child: Card(
                     elevation: 8,
                     color: Colors.white,
@@ -207,10 +190,10 @@ class _HomepageState extends State<Homepage>
                     ),
                     child: SingleChildScrollView(
                       child: Padding(
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         child: Column(
                           children: [
-                            Text(
+                            const Text(
                               "Task List",
                               style: TextStyle(
                                 fontSize: 20,
@@ -218,31 +201,27 @@ class _HomepageState extends State<Homepage>
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            ListTile(
-                              title: Text("write program"),
-                              subtitle: Text("work 0 minute,\nrest 0 minute"),
-                              trailing: IconButton(
-                                icon: Icon(
-                                  Icons.delete_outline,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {},
-                              ),
-                            ),
-                            SizedBox(
-                              height: 1,
-                              child: Container(color: Colors.grey),
-                            ),
-                            ListTile(
-                              title: Text("read english"),
-                              subtitle: Text("work 0 minute, rest 0 minute"),
-                              trailing: IconButton(
-                                icon: Icon(
-                                  Icons.delete_outline,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {},
-                              ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: taskProvider.tasks.length,
+                              itemBuilder: (context, index) {
+                                final task = taskProvider.tasks[index];
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      title: Text(task['task']!),
+                                      subtitle: Text("Work: ${task['work']} min, Rest: ${task['rest']} min"),
+                                      trailing: IconButton(
+                                        icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                        onPressed: () => taskProvider.deleteTask(index),
+                                      ),
+                                    ),
+                                    if (index < taskProvider.tasks.length - 1)
+                                      const Divider(height: 1, color: Colors.grey),
+                                  ],
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -259,39 +238,34 @@ class _HomepageState extends State<Homepage>
   }
 
   void _chooseTaskDialog() {
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Choose Task"),
+          title: const Text("Choose Task"),
           content: SizedBox(
             height: 250,
             width: double.maxFinite,
-            child: ListView(
-              padding: const EdgeInsets.all(8),
-              children: <Widget>[
-                ListTile(
-                  title: Text("read english"),
-                  subtitle: Text("work 0 minute,\nrest 0 minute"),
+            child: ListView.builder(
+              itemCount: taskProvider.tasks.length,
+              itemBuilder: (context, index) {
+                final task = taskProvider.tasks[index];
+                return ListTile(
+                  title: Text(task['task']!),
+                  subtitle: Text("Work: ${task['work']} min, Rest: ${task['rest']} min"),
                   onTap: () {
+                    taskProvider.chooseTask(index);
                     setState(() {
-                      nowTask = "'read english' in progress";
+                      workDuration = int.parse(task['work']!);
+                      breakDuration = int.parse(task['rest']!);
+                      _refreshTimer();
                     });
                     Navigator.pop(context);
                   },
-                ),
-                Divider(),
-                ListTile(
-                  title: Text("write program"),
-                  subtitle: Text("work 0 minute,\nrest 0 minute"),
-                  onTap: () {
-                    setState(() {
-                      nowTask = "'write program' in progress";
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                );
+              },
             ),
           ),
         );
@@ -301,14 +275,12 @@ class _HomepageState extends State<Homepage>
 
   void _updateTimerMode() {
     int workTimeInSeconds = workDuration * 60;
-    int elapsedSeconds =
-        ((workDuration + breakDuration) * 60) - totalDurationInSeconds;
+    int elapsedSeconds = ((workDuration + breakDuration) * 60) - totalDurationInSeconds;
     setState(() {
       isWorkMode = elapsedSeconds < workTimeInSeconds;
     });
   }
 
-  //時間格式化
   String _formatTime(int seconds) {
     int minutes = seconds ~/ 60;
     int secs = seconds % 60;

@@ -1,36 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'app_state.dart';
 
-class Settingpage extends StatefulWidget {
+class Settingpage extends StatelessWidget {
   const Settingpage({super.key});
 
   @override
-  State<Settingpage> createState() => _SettingpageState();
-}
-
-class _SettingpageState extends State<Settingpage> {
-  bool showMode = false; // false = 指針
-  
-
-  @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
+
+    // 預設的漸層顏色選項
+    final gradients = [
+      [Colors.purple.shade400, Colors.blue.shade300],
+      [Colors.orange.shade400, Colors.pink.shade300],
+      [Colors.green.shade400, Colors.teal.shade300],
+      [Colors.indigo.shade400, Colors.cyan.shade300],
+    ];
+
+    void _chooseBackground() {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Choose Background",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 12,
+                  children: List.generate(gradients.length, (index) {
+                    final gradient = gradients[index];
+                    return GestureDetector(
+                      onTap: () {
+                        appState.setBackgroundGradient(gradient); //存到 AppState
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: gradient,
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
+            colors: appState.backgroundGradient, //使用 AppState 的漸層
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Colors.purple.shade400, Colors.blue.shade300],
           ),
         ),
         child: SafeArea(
           child: Center(
             child: Column(
               children: [
-                SizedBox(height: 8),
-                Text(
+                const SizedBox(height: 12),
+                const Text(
                   'Setting',
                   style: TextStyle(
                     fontSize: 42,
@@ -38,55 +90,42 @@ class _SettingpageState extends State<Settingpage> {
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 8),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16),
-                  child: Card(
-                    elevation: 8,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SizedBox(
-                        height: 200,
-                        child: ListView(
-                          children: [
-                            ListTile(title: Text("Account Settings")),
-                            SizedBox(
-                              height: 1,
-                              child: Container(color: Colors.grey),
-                            ),
-                            ListTile(title: Text("Background")),
-                            SizedBox(
-                              height: 1,
-                              child: Container(color: Colors.grey),
-                            ),
-                            // 數字模式切換開關
-                            Row(
-                              children: [
-                                SizedBox(width: 16),
-                                Text("Digital Mode"),
-                                Spacer(),
-                                Switch(
-                                  value: showMode,
-                                  onChanged: (bool value) {
-                                    setState(() {
-                                      showMode = value;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
+                const SizedBox(height: 12),
+                Card(
+                  elevation: 8,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      children: [
+                        const ListTile(title: Text('Account Settings')),
+                        const Divider(),
+                        ListTile(
+                          title: const Text('Background'),
+                          onTap: _chooseBackground,
+                          trailing: const Icon(
+                            Icons.color_lens,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
+                        const Divider(),
+                        ListTile(
+                          title: const Text('Digital Mode'),
+                          trailing: Switch(
+                            value: appState.showMode,
+                            onChanged: (bool value) {
+                              appState.toggleShowMode(value);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(height: 8),
-                // 登出按鈕
+                const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pushReplacementNamed('/login');
@@ -107,66 +146,4 @@ class _SettingpageState extends State<Settingpage> {
       ),
     );
   }
-}
-
-@override
-Widget build(BuildContext context) {
-  final appState = Provider.of<AppState>(context);
-
-  return Scaffold(
-    body: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Colors.purple.shade400, Colors.blue.shade300],
-        ),
-      ),
-      child: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              SizedBox(height: 12),
-              Text(
-                'Setting',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 12),
-              Card(
-                elevation: 8,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Column(
-                    children: [
-                      ListTile(title: Text('Account Settings')),
-                      Divider(),
-                      ListTile(title: Text('Background')),
-                      Divider(),
-                      ListTile(
-                        title: Text('Digital Mode'),
-                        trailing: Switch(
-                          value: appState.showMode,
-                          onChanged: (bool value) {
-                            appState.toggleShowMode(value);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
 }
