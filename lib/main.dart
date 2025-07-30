@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:untitled4/Apppagecontroller.dart';
-import 'package:untitled4/home.dart';
-import 'package:untitled4/log in.dart';
+import 'Apppagecontroller.dart';
 import 'Setting page.dart';
 import 'Register.dart';
-import 'package:untitled4/Splash page.dart';
+
+import 'home.dart';
+import 'log in.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

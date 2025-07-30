@@ -30,13 +30,19 @@ class _ApppagecontrollerState extends State<Apppagecontroller> {
         },
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
-          NavigationDestination(icon: Icon(Icons.list_alt), label: 'Task'),
+          NavigationDestination(
+              icon: Icon(Icons.list_alt),
+              label: 'Task'
+          ),
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
             icon: Icon(Icons.home_outlined),
             label: 'Home',
           ),
-          NavigationDestination(icon: Icon(Icons.settings), label: 'Setting'),
+          NavigationDestination(
+              icon: Icon(Icons.settings),
+              label: 'Setting'
+          ),
         ],
       ),
       body: IndexedStack(index: currentPageIndex, children: _pages),

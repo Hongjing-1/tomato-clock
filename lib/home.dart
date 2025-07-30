@@ -2,8 +2,6 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled4/Setting page.dart';
-import 'package:untitled4/Taskpage.dart';
 import 'clock.dart';
 
 class Homepage extends StatefulWidget {
@@ -107,13 +105,19 @@ class _HomepageState extends State<Homepage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.purple.shade400, Colors.blue.shade300],
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/space.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
+        // decoration: BoxDecoration(
+        //   gradient: LinearGradient(
+        //     begin: Alignment.topLeft,
+        //     end: Alignment.bottomRight,
+        //     colors: [Colors.purple.shade400, Colors.blue.shade300],
+        //   ),
+        // ),
         child: SafeArea(
           child: Center(
             child: Column(
@@ -170,6 +174,13 @@ class _HomepageState extends State<Homepage>
                             : Icon(Icons.play_arrow),
                         iconSize: 42,
                       ),
+                      IconButton(
+                          onPressed: () {
+
+                          },
+                          icon: Icon(Icons.refresh),
+                        iconSize: 42,
+                      )
                     ],
                   ),
                 ),
