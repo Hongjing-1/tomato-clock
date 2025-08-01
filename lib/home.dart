@@ -19,6 +19,8 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
 
   Timer? _countdownTimer;
 
+  List<Map<String, String>> tasks = [];
+
   int workDuration = 25;
   int breakDuration = 5;
   int totalDurationInSeconds = 1500;
@@ -108,11 +110,10 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.purple.shade400, Colors.blue.shade300],
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/space.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: SafeArea(
@@ -188,45 +189,46 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32),
                     ),
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Task List",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: taskProvider.tasks.length,
-                              itemBuilder: (context, index) {
-                                final task = taskProvider.tasks[index];
-                                return Column(
-                                  children: [
-                                    ListTile(
-                                      title: Text(task['task']!),
-                                      subtitle: Text("Work: ${task['work']} min, Rest: ${task['rest']} min"),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.delete_outline, color: Colors.red),
-                                        onPressed: () => taskProvider.deleteTask(index),
-                                      ),
-                                    ),
-                                    if (index < taskProvider.tasks.length - 1)
-                                      const Divider(height: 1, color: Colors.grey),
-                                  ],
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    // child: SingleChildScrollView(
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(12),
+                    //     child: Column(
+                    //       children: [
+                    //         const Text(
+                    //           "Task List",
+                    //           style: TextStyle(
+                    //             fontSize: 20,
+                    //             color: Colors.black,
+                    //             fontWeight: FontWeight.bold,
+                    //           ),
+                    //         ),
+                    //         ListView.builder(
+                    //           itemCount: tasks.length,
+                    //           itemBuilder: (context, index) {
+                    //             final task = tasks[index];
+                    //             return GestureDetector(
+                    //               onTap: () {
+                    //                 // _editTaskDialog(index);
+                    //               },
+                    //               onLongPress: () {
+                    //                 // _confirmDelete(index);
+                    //               },
+                    //               child: Card(
+                    //                 margin: const EdgeInsets.symmetric(
+                    //                     horizontal: 16, vertical: 8),
+                    //                 color: Colors.white70,
+                    //                 child: ListTile(
+                    //                   title: Text('${task['task']}'), // 加這航線會顯示task name
+                    //                   subtitle: Text('Rest: ${task['rest']} min\nWork: ${task['work']} min'), // 原本的 work 改來這裡(用\n換行)
+                    //                 ),
+                    //               ),
+                    //             );
+                    //           },
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                   ),
                 ),
               ],
