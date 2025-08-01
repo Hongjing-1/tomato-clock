@@ -70,8 +70,8 @@ class _TaskpageState extends State<Taskpage> {
                               horizontal: 16, vertical: 8),
                           color: Colors.white70,
                           child: ListTile(
-                            title: Text('Work: ${task['work']} min'),
-                            subtitle: Text('Rest: ${task['rest']} min'),
+                            title: Text('${task['task']}'), // 加這航線會顯示task name
+                            subtitle: Text('Rest: ${task['rest']} min\nWork: ${task['work']} min'), // 原本的 work 改來這裡(用\n換行)
                           ),
                         ),
                       );
