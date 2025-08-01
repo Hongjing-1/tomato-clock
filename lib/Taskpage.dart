@@ -70,9 +70,8 @@ class _TaskpageState extends State<Taskpage> {
                               horizontal: 16, vertical: 8),
                           color: Colors.white70,
                           child: ListTile(
-                            title: Text(task['task'] ?? ''), // 顯示任務名稱
-                            subtitle: Text(
-                                'Work: ${task['work']} min\nRest: ${task['rest']} min'),
+                            title: Text('Work: ${task['work']} min'),
+                            subtitle: Text('Rest: ${task['rest']} min'),
                           ),
                         ),
                       );
@@ -116,9 +115,9 @@ class _TaskpageState extends State<Taskpage> {
                 final work = workController.text;
                 final rest = restController.text;
 
-                if (task.isNotEmpty && work.isNotEmpty && rest.isNotEmpty) {
+                if (task.isNotEmpty&&work.isNotEmpty && rest.isNotEmpty) {
                   setState(() {
-                    tasks.add({'task': task, 'work': work, 'rest': rest});
+                    tasks.add({'task':task,'work': work, 'rest': rest});
                   });
                 }
 
@@ -133,6 +132,7 @@ class _TaskpageState extends State<Taskpage> {
   }
 
   void _editTaskDialog(int index) {
+    // 填入原本的值
     taskController.text = tasks[index]['task']!;
     workController.text = tasks[index]['work']!;
     restController.text = tasks[index]['rest']!;
@@ -154,13 +154,9 @@ class _TaskpageState extends State<Taskpage> {
                 final work = workController.text;
                 final rest = restController.text;
 
-                if (task.isNotEmpty && work.isNotEmpty && rest.isNotEmpty) {
+                if (work.isNotEmpty && rest.isNotEmpty) {
                   setState(() {
-                    tasks[index] = {
-                      'task': task,
-                      'work': work,
-                      'rest': rest,
-                    };
+                    tasks[index] = {'work': work, 'rest': rest};
                   });
                 }
 
@@ -206,6 +202,7 @@ class _TaskpageState extends State<Taskpage> {
       height: 220,
       child: Column(
         children: [
+          // 任務名稱
           TextField(
             controller: taskController,
             keyboardType: TextInputType.text,
@@ -217,6 +214,8 @@ class _TaskpageState extends State<Taskpage> {
             ),
           ),
           const SizedBox(height: 10),
+
+          // 工作時間
           TextField(
             controller: workController,
             keyboardType: TextInputType.number,
@@ -228,6 +227,8 @@ class _TaskpageState extends State<Taskpage> {
             ),
           ),
           const SizedBox(height: 10),
+
+          // 休息時間
           TextField(
             controller: restController,
             keyboardType: TextInputType.number,
