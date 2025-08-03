@@ -139,22 +139,27 @@ class _HomepageState extends State<Homepage>
                 // 顯示計時模式 (數字 or 圓形鐘)
                 SizedBox(
                   height: 300,
-                  child: appState.showMode
-                      ? Text(
-                    _formatTime(totalDurationInSeconds),
-                    style: const TextStyle(fontSize: 72, color: Colors.white),
-                  )
-                      : CustomPaint(
-                    painter: ClockPainter(
-                      isTimerRunning
-                          ? 1 -
-                          (totalDurationInSeconds /
-                              ((workDuration + breakDuration) * 60))
-                          : 0,
-                      workDuration,
-                      breakDuration,
-                    ),
-                    size: const Size(300, 300),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      appState.showMode
+                          ? Text(
+                        _formatTime(totalDurationInSeconds),
+                        style: const TextStyle(fontSize: 72, color: Colors.white),
+                      )
+                          : CustomPaint(
+                        painter: ClockPainter(
+                          isTimerRunning
+                              ? 1 -
+                              (totalDurationInSeconds /
+                                  ((workDuration + breakDuration) * 60))
+                              : 0,
+                          workDuration,
+                          breakDuration,
+                        ),
+                        size: const Size(300, 300),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 12),
