@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:untitled4/task_provider.dart';
 
 class Taskpage extends StatefulWidget {
   const Taskpage({super.key});
@@ -8,7 +10,6 @@ class Taskpage extends StatefulWidget {
 }
 
 class _TaskpageState extends State<Taskpage> {
-  List<Map<String, String>> tasks = [];
   late TextEditingController taskController;
   late TextEditingController workController;
   late TextEditingController restController;
@@ -31,6 +32,8 @@ class _TaskpageState extends State<Taskpage> {
 
   @override
   Widget build(BuildContext context) {
+    final taskProvider = Provider.of<TaskProvider>(context);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -54,31 +57,70 @@ class _TaskpageState extends State<Taskpage> {
                 ),
                 const SizedBox(height: 16),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: tasks.length,
+                  child: taskProvider.tasks.isEmpty // 使用 taskProvider.tasks
+                      ? const Center(
+                    child: Text(
+                      'No tasks yet\nTap + to add a task',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                  )
+                      : ListView.builder(
+                    itemCount: taskProvider.tasks.length, // 使用 taskProvider.tasks
                     itemBuilder: (context, index) {
-                      final task = tasks[index];
+                      final task = taskProvider.tasks[index]; // 使用 taskProvider.tasks
                       return GestureDetector(
-                        onTap: () {
-                          _editTaskDialog(index);
-                        },
-                        onLongPress: () {
-                          _confirmDelete(index);
-                        },
+                        onTap: () => _editTaskDialog(index),
+                        onLongPress: () => _confirmDelete(index),
                         child: Card(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
                           color: Colors.white70,
                           child: ListTile(
-                            title: Text('${task['task']}'), // 加這航線會顯示task name
-                            subtitle: Text('Rest: ${task['rest']} min\nWork: ${task['work']} min'), // 原本的 work 改來這裡(用\n換行)
+                            title: Text(task['task']!),
+                            subtitle: Text(
+                              'Rest: ${task['rest']} min\nWork: ${task['work']} min',
+                            ),
+                            trailing: PopupMenuButton(
+                              onSelected: (value) {
+                                if (value == 'edit') {
+                                  _editTaskDialog(index);
+                                } else if (value == 'delete') {
+                                  _confirmDelete(index);
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: 'edit',
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.edit),
+                                      SizedBox(width: 8),
+                                      Text('Edit'),
+                                    ],
+                                  ),
+                                ),
+                                const PopupMenuItem(
+                                  value: 'delete',
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.delete, color: Colors.red),
+                                      SizedBox(width: 8),
+                                      Text('Delete', style: TextStyle(color: Colors.red)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
                     },
                   ),
-                ),
-              ],
+                ),              ],
             ),
           ),
         ),
@@ -116,8 +158,11 @@ class _TaskpageState extends State<Taskpage> {
                 final rest = restController.text;
 
                 if (task.isNotEmpty&&work.isNotEmpty && rest.isNotEmpty) {
-                  setState(() {
-                    tasks.add({'task':task,'work': work, 'rest': rest});
+                  final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+                  taskProvider.addTask({
+                    'task': task,
+                    'work': work,
+                    'rest': rest,
                   });
                 }
 
@@ -132,10 +177,12 @@ class _TaskpageState extends State<Taskpage> {
   }
 
   void _editTaskDialog(int index) {
-    // 填入原本的值
-    taskController.text = tasks[index]['task']!;
-    workController.text = tasks[index]['work']!;
-    restController.text = tasks[index]['rest']!;
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+
+    // 填入原本的值，使用 taskProvider.tasks
+    taskController.text = taskProvider.tasks[index]['task']!;
+    workController.text = taskProvider.tasks[index]['work']!;
+    restController.text = taskProvider.tasks[index]['rest']!;
 
     showDialog(
       context: context,
@@ -154,9 +201,12 @@ class _TaskpageState extends State<Taskpage> {
                 final work = workController.text;
                 final rest = restController.text;
 
-                if (work.isNotEmpty && rest.isNotEmpty) {
-                  setState(() {
-                    tasks[index] = {'work': work, 'rest': rest};
+                if (task.isNotEmpty && work.isNotEmpty && rest.isNotEmpty) {
+                  final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+                  taskProvider.updateTask(index, {
+                    'task': task,
+                    'work': work,
+                    'rest': rest,
                   });
                 }
 
@@ -184,9 +234,8 @@ class _TaskpageState extends State<Taskpage> {
             ),
             TextButton(
               onPressed: () {
-                setState(() {
-                  tasks.removeAt(index);
-                });
+                final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+                taskProvider.deleteTask(index);
                 Navigator.pop(context);
               },
               child: const Text("Delete", style: TextStyle(color: Colors.red)),

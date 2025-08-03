@@ -32,17 +32,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => Apppagecontroller(), // 入口頁面
-        '/login': (context) => login(),
-        '/register': (context) => RegisterPage(),
-        '/home': (context) => Homepage(),
-        '/Setting': (context) => Settingpage(),
-        '/task': (context) => Taskpage(), // 讓 Taskpage 也能透過命名路由進入
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AppState()),
+        ChangeNotifierProvider(create: (context) => TaskProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        routes: {
+          '/': (context) => Apppagecontroller(), // 入口頁面
+          '/login': (context) => login(),
+          '/register': (context) => RegisterPage(),
+          '/home': (context) => Homepage(),
+          '/Setting': (context) => Settingpage(),
+          '/task': (context) => Taskpage(), // 讓 Taskpage 也能透過命名路由進入
+        },
+      ),
     );
   }
 }

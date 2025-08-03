@@ -13,13 +13,12 @@ class Homepage extends StatefulWidget {
   State<Homepage> createState() => _HomepageState();
 }
 
-class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin {
+class _HomepageState extends State<Homepage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late AudioPlayer _audioPlayer;
 
   Timer? _countdownTimer;
-
-  List<Map<String, String>> tasks = [];
 
   int workDuration = 25;
   int breakDuration = 5;
@@ -124,7 +123,9 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
                 // 顯示當前選擇的任務
                 TextButton(
                   onPressed: _chooseTaskDialog,
-                  child: Text(taskProvider.currentTask, style: const TextStyle(color: Colors.white)),
+                  child: Text('Current tasks : ${taskProvider.currentTask}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -135,24 +136,27 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
                     color: Colors.white,
                   ),
                 ),
-
                 // 顯示計時模式 (數字 or 圓形鐘)
-                appState.showMode
-                    ? Text(
-                  _formatTime(totalDurationInSeconds),
-                  style: const TextStyle(fontSize: 64, color: Colors.white),
-                )
-                    : CustomPaint(
-                  painter: ClockPainter(
-                    isTimerRunning
-                        ? 1 - (totalDurationInSeconds / ((workDuration + breakDuration) * 60))
-                        : 0,
-                    workDuration,
-                    breakDuration,
+                SizedBox(
+                  height: 300,
+                  child: appState.showMode
+                      ? Text(
+                    _formatTime(totalDurationInSeconds),
+                    style: const TextStyle(fontSize: 72, color: Colors.white),
+                  )
+                      : CustomPaint(
+                    painter: ClockPainter(
+                      isTimerRunning
+                          ? 1 -
+                          (totalDurationInSeconds /
+                              ((workDuration + breakDuration) * 60))
+                          : 0,
+                      workDuration,
+                      breakDuration,
+                    ),
+                    size: const Size(300, 300),
                   ),
-                  size: const Size(300, 300),
                 ),
-
                 const SizedBox(height: 12),
                 // 音樂、開始/暫停、重置按鈕
                 Center(
@@ -161,74 +165,107 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
                     children: [
                       IconButton(
                         onPressed: isMusicPlaying ? _stopMusic : _playMusic,
-                        icon: Icon(isMusicPlaying ? Icons.music_note_sharp : Icons.music_off_sharp),
+                        icon: Icon(
+                          isMusicPlaying
+                              ? Icons.music_note_sharp
+                              : Icons.music_off_sharp,
+                        ),
                         iconSize: 42,
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.white60
+                        ),
                       ),
                       IconButton(
                         onPressed: isTimerRunning ? _pauseTimer : _startTimer,
-                        icon: Icon(isTimerRunning ? Icons.stop : Icons.play_arrow),
+                        icon: Icon(
+                          isTimerRunning ? Icons.stop : Icons.play_arrow,
+                        ),
                         iconSize: 42,
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.white60
+                        ),
                       ),
                       IconButton(
                         onPressed: _refreshTimer,
                         icon: const Icon(Icons.refresh),
                         tooltip: 'Refresh Timer',
                         iconSize: 42,
+                        style: IconButton.styleFrom(
+                            backgroundColor: Colors.white60
+                        ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 12),
-
                 // 任務列表
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   child: Card(
                     elevation: 8,
-                    color: Colors.white,
+                    color: Colors.white60,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32),
                     ),
-                    // child: SingleChildScrollView(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(12),
-                    //     child: Column(
-                    //       children: [
-                    //         const Text(
-                    //           "Task List",
-                    //           style: TextStyle(
-                    //             fontSize: 20,
-                    //             color: Colors.black,
-                    //             fontWeight: FontWeight.bold,
-                    //           ),
-                    //         ),
-                    //         ListView.builder(
-                    //           itemCount: tasks.length,
-                    //           itemBuilder: (context, index) {
-                    //             final task = tasks[index];
-                    //             return GestureDetector(
-                    //               onTap: () {
-                    //                 // _editTaskDialog(index);
-                    //               },
-                    //               onLongPress: () {
-                    //                 // _confirmDelete(index);
-                    //               },
-                    //               child: Card(
-                    //                 margin: const EdgeInsets.symmetric(
-                    //                     horizontal: 16, vertical: 8),
-                    //                 color: Colors.white70,
-                    //                 child: ListTile(
-                    //                   title: Text('${task['task']}'), // 加這航線會顯示task name
-                    //                   subtitle: Text('Rest: ${task['rest']} min\nWork: ${task['work']} min'), // 原本的 work 改來這裡(用\n換行)
-                    //                 ),
-                    //               ),
-                    //             );
-                    //           },
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Task List",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 200,
+                            child:
+                                taskProvider
+                                        .tasks
+                                        .isEmpty // 使用 taskProvider.tasks
+                                    ? const Center(
+                                      child: Text(
+                                        'No tasks yet',
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    )
+                                    : ListView.builder(
+                                      itemCount: taskProvider.tasks.length,
+                                      // 使用 taskProvider.tasks
+                                      itemBuilder: (context, index) {
+                                        final task =
+                                            taskProvider
+                                                .tasks[index]; // 使用 taskProvider.tasks
+                                        return GestureDetector(
+                                          onTap: () {
+                                            // 可以添加選擇任務的功能
+                                            taskProvider.chooseTask(index);
+                                          },
+                                          child: Card(
+                                            margin: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 4,
+                                            ),
+                                            color: Colors.white70,
+                                            child: ListTile(
+                                              title: Text(task['task']!),
+                                              subtitle: Text(
+                                                'Rest: ${task['rest']} min\nWork: ${task['work']} min',
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -256,7 +293,9 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
                 final task = taskProvider.tasks[index];
                 return ListTile(
                   title: Text(task['task']!),
-                  subtitle: Text("Work: ${task['work']} min, Rest: ${task['rest']} min"),
+                  subtitle: Text(
+                    "Work: ${task['work']} min, Rest: ${task['rest']} min",
+                  ),
                   onTap: () {
                     taskProvider.chooseTask(index);
                     setState(() {
@@ -277,7 +316,8 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
 
   void _updateTimerMode() {
     int workTimeInSeconds = workDuration * 60;
-    int elapsedSeconds = ((workDuration + breakDuration) * 60) - totalDurationInSeconds;
+    int elapsedSeconds =
+        ((workDuration + breakDuration) * 60) - totalDurationInSeconds;
     setState(() {
       isWorkMode = elapsedSeconds < workTimeInSeconds;
     });
