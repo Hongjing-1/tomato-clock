@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: '/login',
+        initialRoute: '/',
         routes: {
           '/': (context) => Apppagecontroller(), // 入口頁面
           '/login': (context) => login(),
