@@ -177,17 +177,17 @@ class _HomepageState extends State<Homepage>
                         ),
                         iconSize: 42,
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.white60
+                            backgroundColor: Colors.white60
                         ),
                       ),
                       IconButton(
-                        onPressed: isTimerRunning ? _pauseTimer : _startTimer,
+                        onPressed: isTimerRunning ? _pauseTimer : _startTimer,//這裡要麼改才不會refresh
                         icon: Icon(
                           isTimerRunning ? Icons.stop : Icons.play_arrow,
                         ),
                         iconSize: 42,
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.white60
+                            backgroundColor: Colors.white60
                         ),
                       ),
                       IconButton(
@@ -227,46 +227,46 @@ class _HomepageState extends State<Homepage>
                           SizedBox(
                             height: 200,
                             child:
+                            taskProvider
+                                .tasks
+                                .isEmpty // 使用 taskProvider.tasks
+                                ? const Center(
+                              child: Text(
+                                'No tasks yet',
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            )
+                                : ListView.builder(
+                              itemCount: taskProvider.tasks.length,
+                              // 使用 taskProvider.tasks
+                              itemBuilder: (context, index) {
+                                final task =
                                 taskProvider
-                                        .tasks
-                                        .isEmpty // 使用 taskProvider.tasks
-                                    ? const Center(
-                                      child: Text(
-                                        'No tasks yet',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    )
-                                    : ListView.builder(
-                                      itemCount: taskProvider.tasks.length,
-                                      // 使用 taskProvider.tasks
-                                      itemBuilder: (context, index) {
-                                        final task =
-                                            taskProvider
-                                                .tasks[index]; // 使用 taskProvider.tasks
-                                        return GestureDetector(
-                                          onTap: () {
-                                            // 可以添加選擇任務的功能
-                                            taskProvider.chooseTask(index);
-                                          },
-                                          child: Card(
-                                            margin: const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 4,
-                                            ),
-                                            color: Colors.white70,
-                                            child: ListTile(
-                                              title: Text(task['task']!),
-                                              subtitle: Text(
-                                                'Rest: ${task['rest']} min\nWork: ${task['work']} min',
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
+                                    .tasks[index]; // 使用 taskProvider.tasks
+                                return GestureDetector(
+                                  onTap: () {
+                                    // 可以添加選擇任務的功能
+                                    taskProvider.chooseTask(index);
+                                  },
+                                  child: Card(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
                                     ),
+                                    color: Colors.white70,
+                                    child: ListTile(
+                                      title: Text(task['task']!),
+                                      subtitle: Text(
+                                        'Rest: ${task['rest']} min\nWork: ${task['work']} min',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),

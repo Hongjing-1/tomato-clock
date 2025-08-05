@@ -52,7 +52,7 @@ class _TaskpageState extends State<Taskpage> {
                   style: TextStyle(
                     fontSize: 42,
                     fontWeight: FontWeight.bold,
-                    color: Colors.purple,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 16),

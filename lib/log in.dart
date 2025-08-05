@@ -9,10 +9,6 @@ class login extends StatefulWidget {
 }
 
 class _loginState extends State<login> {
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +16,7 @@ class _loginState extends State<login> {
         title: Text('Log in'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: (Navigator.of(context).pop),
+          onPressed: () => Navigator.of(context).pop(), // 修正 pop 寫法
         ),
       ),
       body: Container(
@@ -34,41 +30,58 @@ class _loginState extends State<login> {
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               TextField(
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: "Email:",
                   labelStyle: TextStyle(
                     color: Color(0xFFF7E7CE),
-                    fontSize: 30
+                    fontSize: 30,
                   ),
                 ),
               ),
               TextField(
                 obscureText: true,
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                    labelText: "Password:",
+                  labelText: "Password:",
                   labelStyle: TextStyle(
                     color: Color(0xFFF7E7CE),
-                    fontSize: 30
-                  )
+                    fontSize: 30,
+                  ),
                 ),
-
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/login');
-                  },
-                  child: Text(
-                      'Log in',
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed('/home');
+                },
+                child: Text(
+                  'Log in',
                   style: TextStyle(
                     color: Colors.black87,
-                    fontSize: 30
-                  ),)),
-
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              // 新增「註冊新帳號」按鈕
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/register'); // 跳到註冊頁面
+                },
+                child: Text(
+                  'Don’t have an account? Register Now',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

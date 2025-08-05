@@ -159,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             TextFormField(
                               controller: _usernameController,
                               decoration: InputDecoration(
-                                labelText: 'Account',
+                                labelText: 'Account name',
                                 prefixIcon: Icon(Icons.person_outline),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -380,7 +380,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                         ),
+
                       ],
+
                     ),
                   ],
                 ),

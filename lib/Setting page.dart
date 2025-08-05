@@ -9,72 +9,12 @@ class Settingpage extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
 
-    // 預設的漸層顏色選項
-    final gradients = [
-      [Colors.purple.shade400, Colors.blue.shade300],
-      [Colors.orange.shade400, Colors.pink.shade300],
-      [Colors.green.shade400, Colors.teal.shade300],
-      [Colors.indigo.shade400, Colors.cyan.shade300],
-    ];
-
-    void _chooseBackground() {
-      showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "Choose Background",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 12,
-                  children: List.generate(gradients.length, (index) {
-                    final gradient = gradients[index];
-                    return GestureDetector(
-                      onTap: () {
-                        appState.setBackgroundGradient(gradient); //存到 AppState
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: gradient,
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          );
-        },
-      );
-    }
-
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: appState.backgroundGradient, //使用 AppState 的漸層
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/space.jpg'), // 固定圖片背景
+            fit: BoxFit.cover,
           ),
         ),
         child: SafeArea(
@@ -102,15 +42,6 @@ class Settingpage extends StatelessWidget {
                     child: Column(
                       children: [
                         const ListTile(title: Text('Account Settings')),
-                        const Divider(),
-                        ListTile(
-                          title: const Text('Background'),
-                          onTap: _chooseBackground,
-                          trailing: const Icon(
-                            Icons.color_lens,
-                            color: Colors.grey,
-                          ),
-                        ),
                         const Divider(),
                         ListTile(
                           title: const Text('Digital Mode'),
