@@ -119,12 +119,13 @@ class _HomepageState extends State<Homepage>
           child: Center(
             child: Column(
               children: [
-                const SizedBox(height: 12),
+                const SizedBox(height: 20),
                 // 顯示當前選擇的任務
                 TextButton(
                   onPressed: _chooseTaskDialog,
-                  child: Text('Current tasks : ${taskProvider.currentTask}',
-                    style: const TextStyle(color: Colors.white),
+                  child: Text(
+                    'Current tasks : ${taskProvider.currentTask}',
+                    style: const TextStyle(fontSize: 24, color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -144,21 +145,24 @@ class _HomepageState extends State<Homepage>
                     children: [
                       appState.showMode
                           ? Text(
-                        _formatTime(totalDurationInSeconds),
-                        style: const TextStyle(fontSize: 72, color: Colors.white),
-                      )
+                            _formatTime(totalDurationInSeconds),
+                            style: const TextStyle(
+                              fontSize: 72,
+                              color: Colors.white,
+                            ),
+                          )
                           : CustomPaint(
-                        painter: ClockPainter(
-                          isTimerRunning
-                              ? 1 -
-                              (totalDurationInSeconds /
-                                  ((workDuration + breakDuration) * 60))
-                              : 0,
-                          workDuration,
-                          breakDuration,
-                        ),
-                        size: const Size(300, 300),
-                      ),
+                            painter: ClockPainter(
+                              isTimerRunning
+                                  ? 1 -
+                                      (totalDurationInSeconds /
+                                          ((workDuration + breakDuration) * 60))
+                                  : 0,
+                              workDuration,
+                              breakDuration,
+                            ),
+                            size: const Size(300, 300),
+                          ),
                     ],
                   ),
                 ),
@@ -177,17 +181,18 @@ class _HomepageState extends State<Homepage>
                         ),
                         iconSize: 42,
                         style: IconButton.styleFrom(
-                            backgroundColor: Colors.white60
+                          backgroundColor: Colors.white60,
                         ),
                       ),
                       IconButton(
-                        onPressed: isTimerRunning ? _pauseTimer : _startTimer,//這裡要麼改才不會refresh
+                        onPressed: isTimerRunning ? _pauseTimer : _startTimer,
+                        //這裡要麼改才不會refresh
                         icon: Icon(
                           isTimerRunning ? Icons.stop : Icons.play_arrow,
                         ),
                         iconSize: 42,
                         style: IconButton.styleFrom(
-                            backgroundColor: Colors.white60
+                          backgroundColor: Colors.white60,
                         ),
                       ),
                       IconButton(
@@ -196,7 +201,7 @@ class _HomepageState extends State<Homepage>
                         tooltip: 'Refresh Timer',
                         iconSize: 42,
                         style: IconButton.styleFrom(
-                            backgroundColor: Colors.white60
+                          backgroundColor: Colors.white60,
                         ),
                       ),
                     ],
@@ -227,46 +232,46 @@ class _HomepageState extends State<Homepage>
                           SizedBox(
                             height: 200,
                             child:
-                            taskProvider
-                                .tasks
-                                .isEmpty // 使用 taskProvider.tasks
-                                ? const Center(
-                              child: Text(
-                                'No tasks yet',
-                                style: TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            )
-                                : ListView.builder(
-                              itemCount: taskProvider.tasks.length,
-                              // 使用 taskProvider.tasks
-                              itemBuilder: (context, index) {
-                                final task =
                                 taskProvider
-                                    .tasks[index]; // 使用 taskProvider.tasks
-                                return GestureDetector(
-                                  onTap: () {
-                                    // 可以添加選擇任務的功能
-                                    taskProvider.chooseTask(index);
-                                  },
-                                  child: Card(
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    color: Colors.white70,
-                                    child: ListTile(
-                                      title: Text(task['task']!),
-                                      subtitle: Text(
-                                        'Rest: ${task['rest']} min\nWork: ${task['work']} min',
+                                        .tasks
+                                        .isEmpty // 使用 taskProvider.tasks
+                                    ? const Center(
+                                      child: Text(
+                                        'No tasks yet',
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 16,
+                                        ),
                                       ),
+                                    )
+                                    : ListView.builder(
+                                      itemCount: taskProvider.tasks.length,
+                                      // 使用 taskProvider.tasks
+                                      itemBuilder: (context, index) {
+                                        final task =
+                                            taskProvider
+                                                .tasks[index]; // 使用 taskProvider.tasks
+                                        return GestureDetector(
+                                          onTap: () {
+                                            // 可以添加選擇任務的功能
+                                            taskProvider.chooseTask(index);
+                                          },
+                                          child: Card(
+                                            margin: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 4,
+                                            ),
+                                            color: Colors.white70,
+                                            child: ListTile(
+                                              title: Text(task['task']!),
+                                              subtitle: Text(
+                                                'Rest: ${task['rest']} min\nWork: ${task['work']} min',
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
                           ),
                         ],
                       ),

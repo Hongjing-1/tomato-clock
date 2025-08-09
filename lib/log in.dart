@@ -12,13 +12,6 @@ class _loginState extends State<login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Log in'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(), // 修正 pop 寫法
-        ),
-      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -57,7 +50,7 @@ class _loginState extends State<login> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/home');
+                  Navigator.of(context).pushReplacementNamed('/Apppagecontroller');
                 },
                 child: Text(
                   'Log in',

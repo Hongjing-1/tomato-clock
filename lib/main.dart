@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled4/task_stats_page.dart';
 
 import 'Apppagecontroller.dart';
 import 'home.dart';
@@ -27,6 +28,7 @@ void main() {
   );
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -41,12 +43,14 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
-          '/': (context) => Apppagecontroller(), // 入口頁面
+          '/': (context) => login(), // 入口頁面 Apppagecontroller
+          '/Apppagecontroller': (context) => Apppagecontroller(),
           '/login': (context) => login(),
           '/register': (context) => RegisterPage(),
           '/home': (context) => Homepage(),
           '/Setting': (context) => Settingpage(),
           '/task': (context) => Taskpage(), // 讓 Taskpage 也能透過命名路由進入
+          '/stats': (context) =>TaskStatsPage()
         },
       ),
     );
