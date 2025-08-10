@@ -14,10 +14,9 @@ class _loginState extends State<login> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.purple, Colors.blue],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          image: DecorationImage(
+            image: AssetImage('assets/space.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: Padding(

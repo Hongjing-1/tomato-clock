@@ -90,14 +90,10 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.purple.shade300,
-              Colors.blue.shade900,
-            ],
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/space.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: SafeArea(

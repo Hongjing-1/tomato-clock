@@ -54,7 +54,7 @@ class _HomepageState extends State<Homepage>
       _animationController.forward(from: 0.0);
     });
 
-    _countdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (totalDurationInSeconds > 0) {
         setState(() {
           totalDurationInSeconds--;
@@ -120,7 +120,7 @@ class _HomepageState extends State<Homepage>
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                // 顯示當前選擇的任務
+                // 顯示當前任務
                 TextButton(
                   onPressed: _chooseTaskDialog,
                   child: Text(
@@ -137,77 +137,90 @@ class _HomepageState extends State<Homepage>
                     color: Colors.white,
                   ),
                 ),
-                // 顯示計時模式 (數字 or 圓形鐘)
+                const SizedBox(height: 12),
+
+                // 計時顯示（數字 or 圓形鐘）
                 SizedBox(
                   height: 300,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       appState.showMode
-                          ? Text(
+                          ? SizedBox(
+                        width: 300,
+                        height: 300,
+                        child: Center(
+                          child: Text(
                             _formatTime(totalDurationInSeconds),
                             style: const TextStyle(
                               fontSize: 72,
                               color: Colors.white,
                             ),
-                          )
-                          : CustomPaint(
-                            painter: ClockPainter(
-                              isTimerRunning
-                                  ? 1 -
-                                      (totalDurationInSeconds /
-                                          ((workDuration + breakDuration) * 60))
-                                  : 0,
-                              workDuration,
-                              breakDuration,
-                            ),
-                            size: const Size(300, 300),
                           ),
+                        ),
+                      )
+                          : SizedBox(
+                        width: 300,
+                        height: 300,
+                        child: CustomPaint(
+                          painter: ClockPainter(
+                            isTimerRunning
+                                ? 1 -
+                                (totalDurationInSeconds /
+                                    ((workDuration + breakDuration) *
+                                        60))
+                                : 0,
+                            workDuration,
+                            breakDuration,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
+
                 const SizedBox(height: 12),
+
                 // 音樂、開始/暫停、重置按鈕
-                Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        onPressed: isMusicPlaying ? _stopMusic : _playMusic,
-                        icon: Icon(
-                          isMusicPlaying
-                              ? Icons.music_note_sharp
-                              : Icons.music_off_sharp,
-                        ),
-                        iconSize: 42,
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.white60,
-                        ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: isMusicPlaying ? _stopMusic : _playMusic,
+                      icon: Icon(
+                        isMusicPlaying
+                            ? Icons.music_note_sharp
+                            : Icons.music_off_sharp,
                       ),
-                      IconButton(
-                        onPressed: isTimerRunning ? _pauseTimer : _startTimer,
-                        //這裡要麼改才不會refresh
-                        icon: Icon(
-                          isTimerRunning ? Icons.stop : Icons.play_arrow,
-                        ),
-                        iconSize: 42,
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.white60,
-                        ),
+                      iconSize: 42,
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.white60,
                       ),
-                      IconButton(
-                        onPressed: _refreshTimer,
-                        icon: const Icon(Icons.refresh),
-                        tooltip: 'Refresh Timer',
-                        iconSize: 42,
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.white60,
-                        ),
+                    ),
+                    IconButton(
+                      onPressed: isTimerRunning ? _pauseTimer : _startTimer,
+                      icon: Icon(
+                        isTimerRunning ? Icons.stop : Icons.play_arrow,
                       ),
-                    ],
-                  ),
+                      iconSize: 42,
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.white60,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: _refreshTimer,
+                      icon: const Icon(Icons.refresh),
+                      tooltip: 'Refresh Timer',
+                      iconSize: 42,
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.white60,
+                      ),
+                    ),
+                  ],
                 ),
+
                 const SizedBox(height: 12),
+
                 // 任務列表
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -230,48 +243,42 @@ class _HomepageState extends State<Homepage>
                             ),
                           ),
                           SizedBox(
-                            height: 200,
-                            child:
-                                taskProvider
-                                        .tasks
-                                        .isEmpty // 使用 taskProvider.tasks
-                                    ? const Center(
-                                      child: Text(
-                                        'No tasks yet',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    )
-                                    : ListView.builder(
-                                      itemCount: taskProvider.tasks.length,
-                                      // 使用 taskProvider.tasks
-                                      itemBuilder: (context, index) {
-                                        final task =
-                                            taskProvider
-                                                .tasks[index]; // 使用 taskProvider.tasks
-                                        return GestureDetector(
-                                          onTap: () {
-                                            // 可以添加選擇任務的功能
-                                            taskProvider.chooseTask(index);
-                                          },
-                                          child: Card(
-                                            margin: const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 4,
-                                            ),
-                                            color: Colors.white70,
-                                            child: ListTile(
-                                              title: Text(task['task']!),
-                                              subtitle: Text(
-                                                'Rest: ${task['rest']} min\nWork: ${task['work']} min',
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
+                            height: 200, // 確保 ListView 有固定高度
+                            child: taskProvider.tasks.isEmpty
+                                ? const Center(
+                              child: Text(
+                                'No tasks yet',
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            )
+                                : ListView.builder(
+                              itemCount: taskProvider.tasks.length,
+                              itemBuilder: (context, index) {
+                                final task =
+                                taskProvider.tasks[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    taskProvider.chooseTask(index);
+                                  },
+                                  child: Card(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
                                     ),
+                                    color: Colors.white70,
+                                    child: ListTile(
+                                      title: Text(task['task']!),
+                                      subtitle: Text(
+                                        'Rest: ${task['rest']} min\nWork: ${task['work']} min',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -339,3 +346,4 @@ class _HomepageState extends State<Homepage>
     return "${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}";
   }
 }
+
