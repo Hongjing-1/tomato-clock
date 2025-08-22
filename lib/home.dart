@@ -116,113 +116,103 @@ class _HomepageState extends State<Homepage>
           ),
         ),
         child: SafeArea(
-          child: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                // 顯示當前任務
-                TextButton(
-                  onPressed: _chooseTaskDialog,
-                  child: Text(
-                    'Current tasks : ${taskProvider.currentTask}',
-                    style: const TextStyle(fontSize: 24, color: Colors.white),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+
+              // 顯示當前任務
+              TextButton(
+                onPressed: _chooseTaskDialog,
+                child: Text(
+                  'Current tasks : ${taskProvider.currentTask}',
+                  style: const TextStyle(fontSize: 24, color: Colors.white),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+              Text(
+                isWorkMode ? 'Work Time' : 'Rest Time',
+                style: const TextStyle(
+                  fontSize: 42,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              //計時顯示
+              SizedBox(
+                height: 250,
+                child: Center(
+                  child: appState.showMode
+                      ? Text(
+                    _formatTime(totalDurationInSeconds),
+                    style: const TextStyle(
+                      fontSize: 72,
+                      color: Colors.white,
+                    ),
+                  )
+                      : CustomPaint(
+                    painter: ClockPainter(
+                      isTimerRunning
+                          ? 1 -
+                          (totalDurationInSeconds /
+                              ((workDuration + breakDuration) * 60))
+                          : 0,
+                      workDuration,
+                      breakDuration,
+                    ),
+                    size: const Size(220, 220), // 固定大小
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  isWorkMode ? 'Work Time' : 'Rest Time',
-                  style: const TextStyle(
-                    fontSize: 42,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+              ),
+
+              const SizedBox(height: 12),
+
+              // 🎵 音樂、開始/暫停、重置按鈕
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: isMusicPlaying ? _stopMusic : _playMusic,
+                    icon: Icon(
+                      isMusicPlaying
+                          ? Icons.music_note_sharp
+                          : Icons.music_off_sharp,
+                    ),
+                    iconSize: 42,
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white60,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-
-                // 計時顯示（數字 or 圓形鐘）
-                SizedBox(
-                  height: 300,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      appState.showMode
-                          ? SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: Center(
-                          child: Text(
-                            _formatTime(totalDurationInSeconds),
-                            style: const TextStyle(
-                              fontSize: 72,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      )
-                          : SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: CustomPaint(
-                          painter: ClockPainter(
-                            isTimerRunning
-                                ? 1 -
-                                (totalDurationInSeconds /
-                                    ((workDuration + breakDuration) *
-                                        60))
-                                : 0,
-                            workDuration,
-                            breakDuration,
-                          ),
-                        ),
-                      ),
-                    ],
+                  IconButton(
+                    onPressed: isTimerRunning ? _pauseTimer : _startTimer,
+                    icon: Icon(
+                      isTimerRunning ? Icons.stop : Icons.play_arrow,
+                    ),
+                    iconSize: 42,
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white60,
+                    ),
                   ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // 音樂、開始/暫停、重置按鈕
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      onPressed: isMusicPlaying ? _stopMusic : _playMusic,
-                      icon: Icon(
-                        isMusicPlaying
-                            ? Icons.music_note_sharp
-                            : Icons.music_off_sharp,
-                      ),
-                      iconSize: 42,
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.white60,
-                      ),
+                  IconButton(
+                    onPressed: _refreshTimer,
+                    icon: const Icon(Icons.refresh),
+                    tooltip: 'Refresh Timer',
+                    iconSize: 42,
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white60,
                     ),
-                    IconButton(
-                      onPressed: isTimerRunning ? _pauseTimer : _startTimer,
-                      icon: Icon(
-                        isTimerRunning ? Icons.stop : Icons.play_arrow,
-                      ),
-                      iconSize: 42,
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.white60,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: _refreshTimer,
-                      icon: const Icon(Icons.refresh),
-                      tooltip: 'Refresh Timer',
-                      iconSize: 42,
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.white60,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
 
-                const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-                // 任務列表
-                Container(
+              //任務列表（Expanded 讓它自適應剩下空間）
+              Expanded(
+                child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   child: Card(
                     elevation: 8,
@@ -242,8 +232,8 @@ class _HomepageState extends State<Homepage>
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
-                            height: 200, // 確保 ListView 有固定高度
+                          const SizedBox(height: 8),
+                          Expanded(
                             child: taskProvider.tasks.isEmpty
                                 ? const Center(
                               child: Text(
@@ -257,8 +247,7 @@ class _HomepageState extends State<Homepage>
                                 : ListView.builder(
                               itemCount: taskProvider.tasks.length,
                               itemBuilder: (context, index) {
-                                final task =
-                                taskProvider.tasks[index];
+                                final task = taskProvider.tasks[index];
                                 return GestureDetector(
                                   onTap: () {
                                     taskProvider.chooseTask(index);
@@ -285,14 +274,13 @@ class _HomepageState extends State<Homepage>
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-
   void _chooseTaskDialog() {
     final taskProvider = Provider.of<TaskProvider>(context, listen: false);
 
