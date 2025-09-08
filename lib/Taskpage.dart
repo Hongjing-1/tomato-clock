@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled4/task_provider.dart';
 
+
 class Taskpage extends StatefulWidget {
   const Taskpage({super.key});
 
@@ -53,6 +54,23 @@ class _TaskpageState extends State<Taskpage> {
                     fontSize: 42,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/stats'); // 跳轉到統計頁
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple.shade300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  ),
+                  child: const Text(
+                    'View statistical reports',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 16),

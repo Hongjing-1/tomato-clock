@@ -304,6 +304,7 @@ class _HomepageState extends State<Homepage>
                   onTap: () {
                     taskProvider.chooseTask(index);
                     setState(() {
+
                       workDuration = int.parse(task['work']!);
                       breakDuration = int.parse(task['rest']!);
                       _refreshTimer();

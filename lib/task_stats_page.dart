@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled4/task_provider.dart';
+import 'task_provider.dart';
 
 class TaskStatsPage extends StatelessWidget {
   const TaskStatsPage({super.key});
@@ -16,6 +16,10 @@ class TaskStatsPage extends StatelessWidget {
       totalWork += int.tryParse(task['work'] ?? '0') ?? 0;
       totalRest += int.tryParse(task['rest'] ?? '0') ?? 0;
     }
+
+    double averageWork = taskProvider.tasks.isEmpty
+        ? 0
+        : totalWork / taskProvider.tasks.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -45,10 +49,9 @@ class TaskStatsPage extends StatelessWidget {
                   Text(
                     'Total Tasks: ${taskProvider.tasks.length}',
                     style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.purple,
-                    ),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple),
                   ),
                   const SizedBox(height: 20),
                   Text(
@@ -60,6 +63,11 @@ class TaskStatsPage extends StatelessWidget {
                     'Total Rest Time: $totalRest minutes',
                     style: const TextStyle(fontSize: 20),
                   ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Average Work Time: ${averageWork.toStringAsFixed(1)} minutes',
+                    style: const TextStyle(fontSize: 20),
+                  ),
                   const SizedBox(height: 30),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -67,7 +75,8 @@ class TaskStatsPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 12),
                     ),
                     onPressed: () => Navigator.pop(context),
                     child: const Text(
@@ -84,3 +93,4 @@ class TaskStatsPage extends StatelessWidget {
     );
   }
 }
+
