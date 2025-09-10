@@ -20,7 +20,6 @@ class TaskStatsPage extends StatelessWidget {
     double averageWork = taskProvider.tasks.isEmpty
         ? 0
         : totalWork / taskProvider.tasks.length;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task Statistics'),
