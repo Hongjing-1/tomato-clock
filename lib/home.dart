@@ -47,28 +47,37 @@ class _HomepageState extends State<Homepage>
   }
 
   void _startTimer() {
-    setState(() {
-      totalDurationInSeconds = (workDuration + breakDuration) * 60;
-      isTimerRunning = true;
-      _animationController.duration = Duration(seconds: totalDurationInSeconds);
-      _animationController.forward(from: 0.0);
-    });
-
-    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (totalDurationInSeconds > 0) {
-        setState(() {
-          totalDurationInSeconds--;
-          _updateTimerMode();
-        });
+    if (!isTimerRunning) {
+      // ❌ 不要每次都重設 totalDurationInSeconds
+      // ✅ 只有當 totalDurationInSeconds == 0 時，才重設
+      if (totalDurationInSeconds <= 0) {
+        totalDurationInSeconds = (workDuration + breakDuration) * 60;
+        _animationController.duration = Duration(seconds: totalDurationInSeconds);
+        _animationController.forward(from: 0.0);
       } else {
-        _countdownTimer?.cancel();
-        setState(() {
-          isTimerRunning = false;
-        });
+        // 如果是從暫停繼續，直接 resume 動畫
+        _animationController.forward();
       }
-    });
-  }
 
+      _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (totalDurationInSeconds > 0) {
+          setState(() {
+            totalDurationInSeconds--;
+            _updateTimerMode();
+          });
+        } else {
+          _countdownTimer?.cancel();
+          setState(() {
+            isTimerRunning = false;
+          });
+        }
+      });
+
+      setState(() {
+        isTimerRunning = true;
+      });
+    }
+  }
   void _pauseTimer() {
     _countdownTimer?.cancel();
     _animationController.stop();

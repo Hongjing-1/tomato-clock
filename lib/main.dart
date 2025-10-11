@@ -27,7 +27,6 @@ void main() {
   );
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -49,7 +48,7 @@ class MyApp extends StatelessWidget {
           '/home': (context) => Homepage(),
           '/Setting': (context) => Settingpage(),
           '/task': (context) => Taskpage(), // 讓 Taskpage 也能透過命名路由進入
-          '/stats': (context) =>TaskStatsPage()
+          '/stats': (context) => TaskStatsPage(),
         },
       ),
     );

@@ -100,7 +100,7 @@ class _TaskpageState extends State<Taskpage> {
                           child: ListTile(
                             title: Text(task['task']!),
                             subtitle: Text(
-                              'Rest: ${task['rest']} min\nWork: ${task['work']} min',
+                              'Rest: ${task['rest']} minWork: ${task['work']} min',
                             ),
                             trailing: PopupMenuButton(
                               onSelected: (value) {

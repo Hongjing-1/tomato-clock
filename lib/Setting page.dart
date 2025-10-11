@@ -56,6 +56,7 @@ class Settingpage extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {

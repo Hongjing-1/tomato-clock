@@ -320,7 +320,7 @@ class _Splash_ScreenState extends State<Splash_Screen>
                                   ),
                                   SizedBox(height: 4),
                                   Text(
-                                    "hongjing Chang, \n"
+                                    "hongjing Chang, "
                                         "hongdao Chang",
                                     style: TextStyle(
                                       fontSize: 16,
